@@ -41,7 +41,7 @@ export type RawEntry = {
 
 export type SourceState = {
     lastSeenDate: string;
-    lastSeenHashes: string[];
+    lastSeenHashes: string[]; // SHA-256 hashes of entries at lastSeenDate, for same-day dedup
 };
 
 // ── Output types ──
@@ -51,7 +51,7 @@ export type OutputEntry = {
     date: string | null;
     title: string;
     severity: Severity;
-    severitySignals: string[];
+    severitySignals: string[]; // Keywords that triggered classification (from all matched severity levels, sorted)
     rawContent: string;
     llmSummary: string | null;
     url: string;
