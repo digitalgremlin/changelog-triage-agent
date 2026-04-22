@@ -1,0 +1,9 @@
+{
+  "actorSpecification": 1,
+  "name": "changelog-triage-agent",
+  "title": "Changelog Triage Agent",
+  "description": "Monitor product changelogs for breaking changes, warnings, and updates. Classifies new entries by severity and produces structured triage reports.",
+  "version": "0.1",
+  "dockerfile": "../Dockerfile",
+  "input": "./input_schema.json"
+}
