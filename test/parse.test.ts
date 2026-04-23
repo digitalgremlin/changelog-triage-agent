@@ -56,6 +56,10 @@ describe('parseDate', () => {
         expect(parseDate('')).toBeNull();
     });
 
+    it('returns null for impossible ISO date (invalid month/day)', () => {
+        expect(parseDate('2025-13-45')).toBeNull();
+    });
+
     it('trims leading/trailing whitespace', () => {
         expect(parseDate('  January 14, 2025  ')).toBe('2025-01-14');
     });
