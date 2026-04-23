@@ -33,7 +33,9 @@ describe('classifyEntry', () => {
 
     it('signals are sorted lexicographically', () => {
         const { signals } = classifyEntry('This feature is deprecated and removed');
-        expect(signals).toEqual([...signals].sort());
+        // word-boundary matching: 'removed' does NOT trigger 'moved'
+        // 'deprecated' (d) sorts before 'removed' (r)
+        expect(signals).toEqual(['deprecated', 'removed']);
     });
 
     it('signals include matches from ALL severity levels (not just winning)', () => {
@@ -75,5 +77,13 @@ describe('classifyEntry', () => {
         const { severity, signals } = classifyEntry('');
         expect(severity).toBe('INFO');
         expect(signals).toHaveLength(0);
+    });
+
+    it('does not match keywords as substrings of longer words', () => {
+        // 'removed' must not trigger the WARNING keyword 'moved'
+        const { severity, signals } = classifyEntry('The feature has been removed');
+        expect(severity).toBe('BREAKING');
+        expect(signals).toContain('removed');
+        expect(signals).not.toContain('moved');
     });
 });
