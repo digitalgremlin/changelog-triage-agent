@@ -73,6 +73,17 @@ describe('isNewEntry', () => {
         expect(isNewEntry(entry('title', '2025-01-10'), state, '2025-01-12')).toBe(false);
     });
 
+    it('since set — entry on exact since boundary is not new, regardless of hash', () => {
+        const title = 'boundary entry';
+        const date = '2025-01-12';
+        const state: SourceState = {
+            lastSeenDate: '2024-01-01',
+            // hash is NOT in state, but since-mode should not do hash dedup
+            lastSeenHashes: [],
+        };
+        expect(isNewEntry(entry(title, date), state, date)).toBe(false);
+    });
+
     it('returns true for entry with null date (cannot determine order)', () => {
         const state: SourceState = { lastSeenDate: '2025-01-14', lastSeenHashes: [] };
         expect(isNewEntry(entry('title', null), state, null)).toBe(true);
