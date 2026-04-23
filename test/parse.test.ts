@@ -59,4 +59,8 @@ describe('parseDate', () => {
     it('trims leading/trailing whitespace', () => {
         expect(parseDate('  January 14, 2025  ')).toBe('2025-01-14');
     });
+
+    it('parses "Jan 14,2025" (comma with no trailing space)', () => {
+        expect(parseDate('Jan 14,2025')).toBe('2025-01-14');
+    });
 });
