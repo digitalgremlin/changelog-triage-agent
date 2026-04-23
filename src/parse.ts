@@ -1,4 +1,5 @@
 import type { RawEntry, SourceConfig } from './types.js';
+import * as cheerio from 'cheerio';
 
 const MONTH_MAP: Record<string, string> = {
     jan: '01', january: '01',
@@ -47,5 +48,59 @@ export function parseDate(raw: string): string | null {
     return null;
 }
 
-// parseEntries is added in Task 7
-export type { RawEntry, SourceConfig };
+export function parseEntries(
+    html: string,
+    config: SourceConfig,
+    baseUrl: string,
+    maxEntries: number,
+): { entries: RawEntry[]; parseError: string | null } {
+    const $ = cheerio.load(html);
+
+    let elements: ReturnType<typeof $>;
+    try {
+        elements = $(config.entrySelector);
+    } catch {
+        return { entries: [], parseError: `Invalid CSS selector: ${config.entrySelector}` };
+    }
+
+    if (elements.length === 0) return { entries: [], parseError: null };
+
+    const entries: RawEntry[] = [];
+
+    elements.slice(0, maxEntries).each((_, el) => {
+        const $el = $(el);
+
+        const titleText = config.titleSelector
+            ? $el.find(config.titleSelector).first().text().trim()
+            : $el.text().split('\n').map((l) => l.trim()).find((l) => l.length > 0) ?? '';
+
+        const dateRaw = config.dateSelector
+            ? $el.find(config.dateSelector).first().text().trim()
+            : null;
+
+        const contentText = config.contentSelector
+            ? $el.find(config.contentSelector).text().trim()
+            : $el.text().trim();
+
+        const anchor = $el.find('a[href]').first().attr('href');
+        let entryUrl = baseUrl;
+        if (anchor) {
+            try {
+                entryUrl = anchor.startsWith('http')
+                    ? anchor
+                    : new URL(anchor, baseUrl).href;
+            } catch {
+                entryUrl = baseUrl;
+            }
+        }
+
+        entries.push({
+            title: titleText || 'Untitled',
+            date: dateRaw ? parseDate(dateRaw) : null,
+            rawContent: contentText.slice(0, 2000),
+            url: entryUrl,
+        });
+    });
+
+    return { entries, parseError: null };
+}
