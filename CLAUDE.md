@@ -67,8 +67,8 @@ Both gates must pass before marking a task complete.
 | 2 | `src/types.ts` | ✅ done |
 | 3 | `src/classify.ts` + `test/classify.test.ts` | ✅ done |
 | 4 | `src/parse.ts` (parseDate) + `test/parse.test.ts` | ✅ done |
-| 5 | `src/hash.ts` + `test/hash.test.ts` | ⬜ next |
-| 6 | `src/diff.ts` + `test/diff.test.ts` | ⬜ pending |
+| 5 | `src/hash.ts` + `test/hash.test.ts` | ✅ done |
+| 6 | `src/diff.ts` + `test/diff.test.ts` | ⬜ next |
 | 7 | `src/parse.ts` (add parseEntries) + extend tests | ⬜ pending |
 | 8 | `src/templates.ts` | ⬜ pending |
 | 9 | `src/validate.ts` + `test/validate.test.ts` | ⬜ pending |
