@@ -20,10 +20,14 @@ export function parseDate(raw: string): string | null {
     const s = raw.trim();
     if (!s) return null;
 
-    // YYYY-MM-DD or YYYY-MM-DDThh:mm... — validate calendar after slicing
+    // YYYY-MM-DD or YYYY-MM-DDThh:mm... — validate calendar, reject rollovers
     if (/^\d{4}-\d{2}-\d{2}/.test(s)) {
         const sliced = s.slice(0, 10);
-        return isNaN(new Date(sliced).getTime()) ? null : sliced;
+        const d = new Date(sliced);
+        if (isNaN(d.getTime())) return null;
+        // new Date('2025-02-30') silently rolls to 2025-03-02 — reject via round-trip
+        if (d.toISOString().slice(0, 10) !== sliced) return null;
+        return sliced;
     }
 
     // "January 14, 2025" or "Jan 14, 2025" or "January 14 2025" or "Jan 14,2025"

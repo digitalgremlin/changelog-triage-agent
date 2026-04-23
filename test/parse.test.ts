@@ -56,8 +56,16 @@ describe('parseDate', () => {
         expect(parseDate('')).toBeNull();
     });
 
-    it('returns null for impossible ISO date (invalid month/day)', () => {
-        expect(parseDate('2025-13-45')).toBeNull();
+    it('returns null for impossible ISO dates', () => {
+        expect(parseDate('2025-13-45')).toBeNull();  // month > 12
+        expect(parseDate('2025-00-01')).toBeNull();  // month 00
+        expect(parseDate('2025-02-30')).toBeNull();  // day overflow (Feb has 28 days in 2025)
+        expect(parseDate('2025-02-29')).toBeNull();  // Feb 29 in non-leap year
+        expect(parseDate('2025-04-31')).toBeNull();  // day overflow (April has 30 days)
+    });
+
+    it('accepts valid leap year date Feb 29', () => {
+        expect(parseDate('2024-02-29')).toBe('2024-02-29');  // 2024 is a leap year
     });
 
     it('trims leading/trailing whitespace', () => {
