@@ -24,7 +24,7 @@ The Changelog Triage Agent monitors product changelogs for new entries, classifi
 | Field | Type | Required | Default | Description |
 |---|---|---|---|---|
 | `sources` | array | Yes | — | List of changelog sources to monitor. Each source needs either a `template` name or a `url` + `selector`. See [Curated Templates](#curated-templates) below. |
-| `since` | string | No | KV state | ISO 8601 date override. When set, the actor returns entries after this date and ignores stored KV state for the current run. |
+| `since` | string | No | KV state | ISO 8601 date string (e.g. `"2025-09-01"`). When set, overrides stored KV state for this run only — deduplication resumes normally on the next scheduled run. |
 | `severityFilter` | string | No | `"INFO"` | Minimum severity to include in output. Accepted values: `"INFO"`, `"WARNING"`, `"BREAKING"`. |
 | `enableLlmSummary` | boolean | No | `false` | When `true`, each entry receives an LLM-generated impact summary. Requires `llmApiKey`. |
 | `llmApiKey` | string (secret) | No | — | API key for the LLM provider. Required when `enableLlmSummary` is `true`. Stored as a secret — never logged. |
@@ -142,7 +142,7 @@ For sources not in the template library, provide a `url` plus CSS selectors dire
 
 ## LLM Summaries (Optional)
 
-When you set `enableLlmSummary: true`, the actor calls an OpenAI-compatible LLM API to generate a plain-English impact summary for each new entry. The summary appears in the `llmSummary` field of the output entry.
+When you set `enableLlmSummary: true`, the actor calls an OpenAI-compatible LLM API to generate a plain-English impact summary for each new entry. API usage is billed to your API key — the default model is `gpt-4o-mini`, which is cost-effective for short changelog text. See your LLM provider's pricing page for current rates. The summary appears in the `llmSummary` field of the output entry.
 
 To enable:
 
@@ -182,6 +182,8 @@ To backfill or force a date range, use the `since` input field with an ISO 8601 
 **Missing required fields** — If `sources` is empty or a source is missing both `template` and `url`, the actor throws a validation error at startup with a message identifying the offending source.
 
 **LLM errors** — See [LLM Summaries (Optional)](#llm-summaries-optional). Summarization errors are non-fatal and isolated per entry.
+
+If every source in a run fails to fetch, the actor still pushes a dataset record with `entries: []`, an empty `sourceSummary`, and fetch errors listed in `notes`. The run exits cleanly — it does not throw an unhandled error.
 
 **Debugging tip:** On a first run against a new source, set `maxEntriesPerSource: 5` and `severityFilter: "INFO"` to verify the selectors are working before committing to a schedule.
 
