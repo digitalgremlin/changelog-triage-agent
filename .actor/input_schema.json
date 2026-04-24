@@ -7,7 +7,8 @@
       "title": "Sources",
       "type": "array",
       "description": "Changelog sources to monitor. Each needs template OR (url + selector).",
-      "editor": "json"
+      "editor": "json",
+      "prefill": [{"name": "stripe", "template": "stripe"}]
     },
     "since": {
       "title": "Since date (ISO 8601)",
