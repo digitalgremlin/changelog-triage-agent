@@ -69,15 +69,15 @@ Both gates must pass before marking a task complete.
 | 4 | `src/parse.ts` (parseDate) + `test/parse.test.ts` | ✅ done |
 | 5 | `src/hash.ts` + `test/hash.test.ts` | ✅ done |
 | 6 | `src/diff.ts` + `test/diff.test.ts` | ✅ done |
-| 7 | `src/parse.ts` (add parseEntries) + extend tests | ⬜ next |
-| 8 | `src/templates.ts` | ⬜ pending |
-| 9 | `src/validate.ts` + `test/validate.test.ts` | ⬜ pending |
-| 10 | `src/sort.ts` + `test/sort.test.ts` | ⬜ pending |
-| 11 | `src/report.ts` + `test/report.test.ts` | ⬜ pending |
-| 12 | `src/llm.ts` + `test/llm.test.ts` | ⬜ pending |
-| 13 | `src/fetch.ts` | ⬜ pending |
-| 14 | `test/fixtures/` + `test/pipeline.test.ts` | ⬜ pending |
-| 15 | `src/main.ts` | ⬜ pending |
+| 7 | `src/parse.ts` (add parseEntries) + extend tests | ✅ done |
+| 8 | `src/templates.ts` | ✅ done |
+| 9 | `src/validate.ts` + `test/validate.test.ts` | ✅ done |
+| 10 | `src/sort.ts` + `test/sort.test.ts` | ✅ done |
+| 11 | `src/report.ts` + `test/report.test.ts` | ✅ done |
+| 12 | `src/llm.ts` + `test/llm.test.ts` | ✅ done |
+| 13 | `src/fetch.ts` | ✅ done |
+| 14 | `test/fixtures/` + `test/pipeline.test.ts` | ✅ done |
+| 15 | `src/main.ts` | ✅ done |
 
 ## Lessons Learned (this build)
 

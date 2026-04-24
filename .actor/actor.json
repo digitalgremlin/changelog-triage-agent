@@ -2,8 +2,11 @@
   "actorSpecification": 1,
   "name": "changelog-triage-agent",
   "title": "Changelog Triage Agent",
-  "description": "Monitor product changelogs for breaking changes, warnings, and updates. Classifies new entries by severity and produces structured triage reports.",
+  "description": "Monitor product changelogs across multiple services. Classifies new entries as BREAKING, WARNING, or INFO, de-duplicates across runs, and produces structured triage reports so your team catches API deprecations and migration notices before they cause incidents.",
   "version": "0.1",
   "dockerfile": "../Dockerfile",
-  "input": "./input_schema.json"
+  "input": "./input_schema.json",
+  "generatedBy": "Claude Code with Claude Sonnet 4.6",
+  "categories": ["AI_GPT_AND_LLMS"],
+  "tags": ["changelog", "monitoring", "breaking-changes", "triage", "api-monitoring", "severity-classification", "devops", "ai-agent"]
 }

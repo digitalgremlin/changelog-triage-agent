@@ -7,12 +7,13 @@
       "title": "Sources",
       "type": "array",
       "description": "Changelog sources to monitor. Each needs template OR (url + selector).",
-      "editor": "json"
+      "editor": "json",
+      "prefill": [{"name": "openai", "template": "openai"}]
     },
     "since": {
       "title": "Since date (ISO 8601)",
       "type": "string",
-      "description": "Override KV state — only return entries after this date.",
+      "description": "Override KV state — only return entries after this date. Useful for backfills or re-triage; deduplication resumes normally on the next run.",
       "editor": "textfield"
     },
     "severityFilter": {
@@ -39,14 +40,14 @@
     "llmModel": {
       "title": "LLM model",
       "type": "string",
-      "description": "Model identifier passed to the LLM API.",
+      "description": "OpenAI-compatible model identifier (e.g. \"gpt-4o-mini\", \"gpt-4o\"). Used when enableLlmSummary is true.",
       "editor": "textfield",
       "default": "gpt-4o-mini"
     },
     "maxEntriesPerSource": {
       "title": "Max entries per source",
       "type": "integer",
-      "description": "Cap to control run cost.",
+      "description": "Cap per source per run (1–200). Lower values reduce compute cost and LLM API calls. Raise to 200 for initial historical backfills.",
       "default": 50,
       "minimum": 1,
       "maximum": 200
