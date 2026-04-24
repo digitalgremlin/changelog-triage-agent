@@ -1,4 +1,6 @@
-The Changelog Triage Agent monitors product changelogs for new entries, classifies each entry by severity (BREAKING / WARNING / INFO), and produces structured triage reports — so your platform team can catch API deprecations, breaking changes, and migration notices before they cause incidents.
+The Changelog Triage Agent watches product changelogs across multiple services, classifies each new entry by severity (BREAKING / WARNING / INFO), and delivers a structured triage report — so your team catches API deprecations, breaking changes, and migration notices before they cause incidents.
+
+Unlike generic web monitors, this actor de-duplicates across runs using SHA-256 hashing, so you only see entries that are actually new since the last check. Pair it with Apify Scheduler and a webhook to get a zero-noise, actionable alert feed instead of raw changelog noise.
 
 ## Use Cases
 
@@ -24,12 +26,12 @@ The Changelog Triage Agent monitors product changelogs for new entries, classifi
 | Field | Type | Required | Default | Description |
 |---|---|---|---|---|
 | `sources` | array | Yes | — | List of changelog sources to monitor. Each source needs either a `template` name or a `url` + `selector`. See [Curated Templates](#curated-templates) below. |
-| `since` | string | No | KV state | ISO 8601 date string (e.g. `"2025-09-01"`). When set, overrides stored KV state for this run only — deduplication resumes normally on the next scheduled run. |
+| `since` | string | No | KV state | ISO 8601 date string (e.g. `"2025-09-01"`). Overrides stored KV state for this run only — use this for backfills or re-triage without resetting your deduplication history. Deduplication resumes normally on the next run. |
 | `severityFilter` | string | No | `"INFO"` | Minimum severity to include in output. Accepted values: `"INFO"`, `"WARNING"`, `"BREAKING"`. |
 | `enableLlmSummary` | boolean | No | `false` | When `true`, each entry receives an LLM-generated impact summary. Requires `llmApiKey`. |
 | `llmApiKey` | string (secret) | No | — | API key for the LLM provider. Required when `enableLlmSummary` is `true`. Stored as a secret — never logged. |
-| `llmModel` | string | No | `"gpt-4o-mini"` | Model identifier passed to the LLM API. |
-| `maxEntriesPerSource` | integer | No | `50` | Maximum entries to process per source per run. Range: 1–200. Use lower values to reduce run cost. |
+| `llmModel` | string | No | `"gpt-4o-mini"` | Model identifier passed to the LLM API. Accepts any OpenAI-compatible model string (e.g. `"gpt-4o"`, `"gpt-4o-mini"`, `"o1-mini"`). |
+| `maxEntriesPerSource` | integer | No | `50` | Maximum entries to process per source per run. Range: 1–200. Lower values reduce compute cost and LLM API calls; higher values (up to 200) are useful for initial historical backfills. |
 
 ### Source object format
 
@@ -159,7 +161,7 @@ The `llmApiKey` is stored as a secret and is never written to logs or dataset ou
 
 If summarization fails for an individual entry (network error, rate limit, invalid key), the actor sets `llmSummary: null` for that entry and continues. A single failed summary does not abort the run or affect the rest of the output.
 
-The `llmModel` field accepts any model identifier your API key has access to. The default is `gpt-4o-mini`, which balances cost and quality for short changelog entries.
+The `llmModel` field accepts any OpenAI-compatible model identifier your API key has access to (e.g. `"gpt-4o-mini"`, `"gpt-4o"`, `"o1-mini"`). The default `gpt-4o-mini` balances cost and quality well for short changelog text. Switching to `gpt-4o` improves summary depth but increases cost per entry.
 
 ## Scheduling
 
