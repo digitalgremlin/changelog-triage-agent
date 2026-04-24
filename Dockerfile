@@ -1,9 +1,29 @@
-FROM apify/actor-node:22
+FROM apify/actor-node:22 AS builder
 
-COPY package*.json ./
-RUN npm --quiet set progress=false && npm install --only=prod --no-optional
+COPY --chown=myuser:myuser package*.json ./
 
-COPY . ./
+RUN npm install --include=dev --audit=false
+
+COPY --chown=myuser:myuser . ./
+
 RUN npm run build
 
-CMD npm run start:prod
+FROM apify/actor-node:22
+
+COPY --chown=myuser:myuser package*.json ./
+
+RUN npm --quiet set progress=false \
+    && npm install --omit=dev --omit=optional \
+    && echo "Installed NPM packages:" \
+    && (npm list --omit=dev --all || true) \
+    && echo "Node.js version:" \
+    && node --version \
+    && echo "NPM version:" \
+    && npm --version \
+    && rm -r ~/.npm
+
+COPY --from=builder --chown=myuser:myuser /usr/src/app/dist ./dist
+
+COPY --chown=myuser:myuser . ./
+
+CMD ["node", "dist/main.js"]
