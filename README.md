@@ -47,7 +47,6 @@ Each item in the `sources` array is an object. Use either `template` (for curate
     "name": "My Internal API",
     "url": "https://docs.example.com/changelog",
     "selector": ".changelog-item",
-    "titleSelector": "h3",
     "dateSelector": ".date",
     "contentSelector": ".body"
   }
