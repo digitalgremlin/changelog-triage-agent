@@ -8,7 +8,6 @@ import { isNewEntry, computeNewState } from '../src/diff.js';
 import { classifyEntry } from '../src/classify.js';
 import { sortEntries, filterBySeverity } from '../src/sort.js';
 import { buildReport } from '../src/report.js';
-import { TEMPLATES } from '../src/templates.js';
 import type { OutputEntry, SourceConfig, SourceState } from '../src/types.js';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
@@ -20,11 +19,25 @@ const OPENAI_URL = 'https://platform.openai.com/docs/changelog';
 const ANTHROPIC_URL = 'https://docs.anthropic.com/en/docs/about-claude/changelog';
 
 function makeOpenAIConfig(): SourceConfig {
-    return { name: 'OpenAI', ...TEMPLATES['openai'] };
+    return {
+        name: 'OpenAI',
+        url: OPENAI_URL,
+        entrySelector: '.changelog-entry',
+        titleSelector: '.entry-title',
+        dateSelector: '.entry-date',
+        contentSelector: '.entry-body',
+    };
 }
 
 function makeAnthropicConfig(): SourceConfig {
-    return { name: 'Anthropic', ...TEMPLATES['anthropic'] };
+    return {
+        name: 'Anthropic',
+        url: ANTHROPIC_URL,
+        entrySelector: '.changelog-item',
+        titleSelector: '.item-title',
+        dateSelector: '.item-date',
+        contentSelector: '.item-body',
+    };
 }
 
 function toOutputEntry(source: string, raw: { title: string; date: string | null; rawContent: string; url: string }): OutputEntry {

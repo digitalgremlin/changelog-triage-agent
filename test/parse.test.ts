@@ -169,6 +169,17 @@ describe('parseEntries', () => {
         expect(parseError).toBeTruthy();
     });
 
+    it('reads datetime attribute from <time> elements when text is unparseable', () => {
+        const html = `<html><body>
+          <div class="changelog-entry">
+            <time class="entry-date" datetime="2026-04-23">Apr.23</time>
+            <h3 class="entry-title">Some feature shipped</h3>
+            <div class="entry-body">content here</div>
+          </div></body></html>`;
+        const { entries } = parseEntries(html, SAMPLE_CONFIG, SAMPLE_CONFIG.url, 50);
+        expect(entries[0].date).toBe('2026-04-23');
+    });
+
     it('returns empty entries and null parseError when selector finds nothing', () => {
         const noMatchConfig: SourceConfig = { ...SAMPLE_CONFIG, entrySelector: '.no-match' };
         const { entries, parseError } = parseEntries(

@@ -75,7 +75,10 @@ export function parseEntries(
             : $el.text().split('\n').map((l) => l.trim()).find((l) => l.length > 0) ?? '';
 
         const dateRaw = config.dateSelector
-            ? $el.find(config.dateSelector).first().text().trim()
+            ? (() => {
+                const el = $el.find(config.dateSelector).first();
+                return el.attr('datetime') ?? el.text().trim();
+            })()
             : null;
 
         const contentText = config.contentSelector

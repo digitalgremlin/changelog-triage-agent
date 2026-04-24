@@ -40,8 +40,8 @@ Each item in the `sources` array is an object. Use either `template` (for curate
 ```json
 [
   {
-    "name": "OpenAI",
-    "template": "openai"
+    "name": "GitHub",
+    "template": "github"
   },
   {
     "name": "My Internal API",
@@ -69,30 +69,30 @@ The actor pushes one record to the Apify dataset per run. The record contains a 
   "totalInfo": 1,
   "entries": [
     {
-      "source": "OpenAI",
+      "source": "GitHub",
       "date": "2025-09-14",
-      "title": "Deprecation of gpt-3.5-turbo-0301",
+      "title": "Copilot Chat improvements for pull requests",
       "severity": "BREAKING",
       "severitySignals": ["deprecated"],
-      "rawContent": "gpt-3.5-turbo-0301 will be deprecated on October 1, 2025. Migrate to gpt-3.5-turbo.",
-      "llmSummary": "The gpt-3.5-turbo-0301 model snapshot is being retired. Teams using this model ID directly must update their code to reference gpt-3.5-turbo before October 1 to avoid request failures.",
-      "url": "https://platform.openai.com/docs/changelog"
+      "rawContent": "The legacy Copilot Chat endpoint will be deprecated on October 1, 2025. Migrate to the new API.",
+      "llmSummary": "The legacy Copilot Chat endpoint is being retired. Teams using it directly must update to the new API before October 1 to avoid request failures.",
+      "url": "https://github.blog/changelog/2025-09-14-copilot-chat-improvements"
     },
     {
-      "source": "Anthropic",
+      "source": "Cloudflare",
       "date": "2025-09-13",
-      "title": "Messages API rate limit changes",
+      "title": "Workers rate limit changes",
       "severity": "WARNING",
       "severitySignals": ["changed"],
-      "rawContent": "Rate limits for the Messages API have been updated for Tier 1 accounts.",
+      "rawContent": "Rate limits for Workers free plan have been updated.",
       "llmSummary": null,
-      "url": "https://docs.anthropic.com/en/docs/about-claude/changelog"
+      "url": "https://blog.cloudflare.com/workers-rate-limit-changes"
     }
   ],
   "sourceSummary": [
     {
-      "name": "OpenAI",
-      "url": "https://platform.openai.com/docs/changelog",
+      "name": "GitHub",
+      "url": "https://github.blog/changelog/",
       "entriesFound": 25,
       "newEntries": 2,
       "severityCounts": { "BREAKING": 1, "WARNING": 1, "INFO": 0 },
@@ -125,16 +125,16 @@ Currently supported templates:
 
 | Template name | Service |
 |---|---|
-| `openai` | OpenAI Platform changelog |
-| `anthropic` | Anthropic Claude changelog |
+| `github` | GitHub Blog Changelog |
+| `cloudflare` | Cloudflare Blog |
 
 To use a template:
 
 ```json
 {
   "sources": [
-    { "name": "OpenAI", "template": "openai" },
-    { "name": "Anthropic", "template": "anthropic" }
+    { "name": "GitHub", "template": "github" },
+    { "name": "Cloudflare", "template": "cloudflare" }
   ]
 }
 ```
@@ -149,7 +149,7 @@ To enable:
 
 ```json
 {
-  "sources": [{ "name": "OpenAI", "template": "openai" }],
+  "sources": [{ "name": "GitHub", "template": "github" }],
   "enableLlmSummary": true,
   "llmApiKey": "YOUR_API_KEY",
   "llmModel": "gpt-4o-mini"

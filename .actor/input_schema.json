@@ -8,7 +8,7 @@
       "type": "array",
       "description": "Changelog sources to monitor. Each needs template OR (url + selector).",
       "editor": "json",
-      "prefill": [{"name": "openai", "template": "openai"}]
+      "prefill": [{"name": "github", "template": "github"}]
     },
     "since": {
       "title": "Since date (ISO 8601)",

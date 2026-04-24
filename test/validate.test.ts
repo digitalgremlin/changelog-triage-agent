@@ -5,7 +5,7 @@ import type { Input } from '../src/types.js';
 
 function minimalInput(overrides: Partial<Input> = {}): Input {
     return {
-        sources: [{ name: 'OpenAI', template: 'openai' }],
+        sources: [{ name: 'GitHub', template: 'github' }],
         ...overrides,
     };
 }
@@ -16,8 +16,8 @@ describe('validateInput', () => {
         expect(result.valid).toBe(true);
         expect(result.errors).toHaveLength(0);
         expect(result.sources).toHaveLength(1);
-        expect(result.sources[0].name).toBe('OpenAI');
-        expect(result.sources[0].url).toBe('https://platform.openai.com/docs/changelog');
+        expect(result.sources[0].name).toBe('GitHub');
+        expect(result.sources[0].url).toBe('https://github.blog/changelog/');
     });
 
     it('accepts a valid custom URL source', () => {
@@ -45,7 +45,7 @@ describe('validateInput', () => {
     it('rejects more than 20 sources', () => {
         const sources = Array.from({ length: 21 }, (_, i) => ({
             name: `Source ${i}`,
-            template: 'openai',
+            template: 'github',
         }));
         const result = validateInput({ sources });
         expect(result.valid).toBe(false);
@@ -77,7 +77,7 @@ describe('validateInput', () => {
 
     it('rejects source name longer than 100 chars', () => {
         const result = validateInput({
-            sources: [{ name: 'x'.repeat(101), template: 'openai' }],
+            sources: [{ name: 'x'.repeat(101), template: 'github' }],
         });
         expect(result.valid).toBe(false);
     });
