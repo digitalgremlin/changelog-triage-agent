@@ -86,4 +86,44 @@ describe('classifyEntry', () => {
         expect(signals).toContain('removed');
         expect(signals).not.toContain('moved');
     });
+
+    // Regression: real GitHub/Cloudflare changelog titles use noun/variant
+    // inflections ('deprecation', 'Removal', 'no longer available') that the
+    // original exact-form keywords ('deprecated', 'removed', 'no longer
+    // supported') missed — surfaced by a live run that classified all 50
+    // entries INFO, including a real Python 3.9 deprecation and an API removal.
+
+    it('classifies the noun form "deprecation" as BREAKING', () => {
+        const { severity, signals } = classifyEntry(
+            'Upcoming deprecation of Python 3.9 for Dependabot',
+        );
+        expect(severity).toBe('BREAKING');
+        expect(signals).toContain('deprecated');
+    });
+
+    it('classifies "Removal" as BREAKING', () => {
+        const { severity, signals } = classifyEntry(
+            'Removal of code_scanning_upload field from rate_limit API endpoint',
+        );
+        expect(severity).toBe('BREAKING');
+        expect(signals).toContain('removed');
+    });
+
+    it('classifies "no longer available" as WARNING', () => {
+        const { severity, signals } = classifyEntry(
+            'GitHub Classroom sign-ups are no longer available',
+        );
+        expect(severity).toBe('WARNING');
+        expect(signals).toContain('no longer');
+    });
+
+    it('still treats "no longer supported" as BREAKING (outranks WARNING)', () => {
+        const { severity } = classifyEntry('Legacy v1 tokens are no longer supported');
+        expect(severity).toBe('BREAKING');
+    });
+
+    it('keeps short INFO keywords whole-word (does not fire on "newsletter")', () => {
+        const { signals } = classifyEntry('Subscribe to our newsletter for updates');
+        expect(signals).not.toContain('new');
+    });
 });
