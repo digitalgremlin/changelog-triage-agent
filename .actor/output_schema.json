@@ -1,0 +1,13 @@
+{
+    "actorOutputSchemaVersion": 1,
+    "title": "Changelog Triage Agent output",
+    "description": "Each run pushes one triage report to the default dataset. See the dataset schema for per-field details and the available views (Triaged entries, Run summary).",
+    "properties": {
+        "report": {
+            "type": "string",
+            "title": "Triage report",
+            "description": "Severity-classified new changelog entries plus run totals and per-source summary, stored as items in the default dataset.",
+            "template": "{{links.apiDefaultDatasetUrl}}/items"
+        }
+    }
+}
