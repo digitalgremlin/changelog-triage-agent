@@ -1,0 +1,160 @@
+{
+    "actorSpecification": 1,
+    "fields": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+            "runDate": {
+                "type": "string",
+                "title": "Run date",
+                "description": "ISO 8601 timestamp of when this triage run completed.",
+                "example": "2026-06-01T12:00:00.000Z"
+            },
+            "sourcesChecked": {
+                "type": "integer",
+                "title": "Sources checked",
+                "description": "Number of changelog sources fetched in this run.",
+                "example": 2
+            },
+            "totalNewEntries": {
+                "type": "integer",
+                "title": "New entries",
+                "description": "Total new changelog entries found across all sources since the last run.",
+                "example": 50
+            },
+            "totalBreaking": {
+                "type": "integer",
+                "title": "Breaking",
+                "description": "Count of new entries classified as BREAKING.",
+                "example": 2
+            },
+            "totalWarning": {
+                "type": "integer",
+                "title": "Warning",
+                "description": "Count of new entries classified as WARNING.",
+                "example": 1
+            },
+            "totalInfo": {
+                "type": "integer",
+                "title": "Info",
+                "description": "Count of new entries classified as INFO.",
+                "example": 47
+            },
+            "entries": {
+                "type": "array",
+                "title": "Triaged entries",
+                "description": "Every new changelog entry, classified by severity and sorted (BREAKING first, then by date).",
+                "items": {
+                    "type": "object",
+                    "properties": {
+                        "source": {
+                            "type": "string",
+                            "title": "Source",
+                            "description": "Name of the changelog source the entry came from.",
+                            "example": "github"
+                        },
+                        "date": {
+                            "type": ["string", "null"],
+                            "title": "Date",
+                            "description": "Machine-readable entry date, or null if the source did not provide one.",
+                            "example": "2026-05-26"
+                        },
+                        "title": {
+                            "type": "string",
+                            "title": "Title",
+                            "description": "The changelog entry's title.",
+                            "example": "Removal of code_scanning_upload field from rate_limit API endpoint"
+                        },
+                        "severity": {
+                            "type": "string",
+                            "title": "Severity",
+                            "description": "Classification assigned to the entry.",
+                            "enum": ["BREAKING", "WARNING", "INFO"],
+                            "example": "BREAKING"
+                        },
+                        "severitySignals": {
+                            "type": "array",
+                            "title": "Severity signals",
+                            "description": "Keywords that triggered the severity classification.",
+                            "items": { "type": "string" },
+                            "example": ["removal", "deprecated"]
+                        },
+                        "rawContent": {
+                            "type": "string",
+                            "title": "Raw content",
+                            "description": "The original body text of the changelog entry."
+                        },
+                        "llmSummary": {
+                            "type": ["string", "null"],
+                            "title": "LLM summary",
+                            "description": "Optional one-line impact note, present only when LLM summary mode is enabled; otherwise null.",
+                            "example": null
+                        },
+                        "url": {
+                            "type": "string",
+                            "title": "URL",
+                            "description": "Direct link to the changelog entry.",
+                            "example": "https://github.blog/changelog/"
+                        }
+                    }
+                }
+            },
+            "sourceSummary": {
+                "type": "array",
+                "title": "Per-source summary",
+                "description": "Per-source breakdown: entries found, new entries, and severity counts.",
+                "items": { "type": "object" }
+            },
+            "meta": {
+                "type": "object",
+                "title": "Run metadata",
+                "description": "Run configuration: since date, severity filter, LLM summary mode, model, and first-run flag."
+            },
+            "notes": {
+                "type": "array",
+                "title": "Notes",
+                "description": "Human-readable notes or warnings about the run (e.g. parse or fetch issues).",
+                "items": { "type": "string" }
+            }
+        }
+    },
+    "views": {
+        "entries": {
+            "title": "Triaged entries",
+            "description": "One row per new changelog entry, severity-sorted (BREAKING first).",
+            "transformation": {
+                "unwind": ["entries"],
+                "fields": ["severity", "source", "date", "title", "url", "llmSummary"]
+            },
+            "display": {
+                "component": "table",
+                "properties": {
+                    "severity": { "label": "Severity", "format": "text" },
+                    "source": { "label": "Source", "format": "text" },
+                    "date": { "label": "Date", "format": "text" },
+                    "title": { "label": "Title", "format": "text" },
+                    "url": { "label": "Link", "format": "link" },
+                    "llmSummary": { "label": "Impact (LLM)", "format": "text" }
+                }
+            }
+        },
+        "summary": {
+            "title": "Run summary",
+            "description": "One row per run: totals and severity counts.",
+            "transformation": {
+                "fields": ["runDate", "sourcesChecked", "totalNewEntries", "totalBreaking", "totalWarning", "totalInfo"]
+            },
+            "display": {
+                "component": "table",
+                "properties": {
+                    "runDate": { "label": "Run date", "format": "date" },
+                    "sourcesChecked": { "label": "Sources", "format": "number" },
+                    "totalNewEntries": { "label": "New", "format": "number" },
+                    "totalBreaking": { "label": "Breaking", "format": "number" },
+                    "totalWarning": { "label": "Warning", "format": "number" },
+                    "totalInfo": { "label": "Info", "format": "number" }
+                }
+            }
+        }
+    }
+}
