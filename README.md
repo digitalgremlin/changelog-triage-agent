@@ -6,7 +6,7 @@ Unlike a generic web monitor, this Actor de-duplicates across runs using SHA-256
 
 A short terminal walkthrough of one run — fetching each source, classifying entries by severity, deduplicating against prior state, and emitting the triage report.
 
-![Changelog Triage Agent terminal demo](https://raw.githubusercontent.com/digitalgremlin/changelog-triage-agent/main/.demo/changelog-triage-agent-demo.gif)
+![Changelog Triage Agent terminal demo](https://raw.githubusercontent.com/digitalgremlin/digitalgremlin/main/apify-actor-demos/changelog-triage-agent-demo.gif)
 
 ## Why use Changelog Triage Agent?
 
